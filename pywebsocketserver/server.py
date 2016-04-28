@@ -1,10 +1,12 @@
 # -*- coding: utf8 -*-
 
 import socket
-import time
-
 
 from thread import SocketIoThread
+
+
+from threading import Timer  
+import time  
 
 
 class SocketServer:
@@ -14,7 +16,18 @@ class SocketServer:
         self.uid = 0
         self.port = port
         self.IoList = {}
+
+    def mySendMessage(self):
+      ##引入线程来模拟后台向前台push数据
+      while 1:
+        print "running"
+        if self.uid:
+            self.IoList[self.uid].sendData("new message")
+        time.sleep(5)
+
     def run(self):
+        myTimer=Timer(5,self.mySendMessage)
+        myTimer.start()
         sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         sock.bind(('',self.port))
         sock.listen(100)
